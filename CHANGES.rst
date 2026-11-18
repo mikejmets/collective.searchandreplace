@@ -1,10 +1,16 @@
 Changelog
 =========
 
-8.3.2 (unreleased)
+9.0.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Breaking: Replace ``pkg_resources`` namespace with PEP 420 native namespace,
+  using ``plone.meta``'s ``switch-to-pep420`` (Plone 6.2 PLIP #3928).
+  Support only Plone 6.2 and Python 3.10+.
+
+- Move the code to a ``src/`` layout and apply the ``plone.meta`` default
+  configuration (tox, GitHub Actions, pre-commit, ``pyproject.toml``), testing
+  Plone 6.2 only.
 
 
 8.3.1 (2025-01-10)

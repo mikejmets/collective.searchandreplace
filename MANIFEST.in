@@ -1,4 +1,4 @@
-graft collective
+graft src
 graft docs
 graft binder
 include *.rst
