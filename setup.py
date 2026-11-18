@@ -18,20 +18,7 @@
 #
 ##############################################################################
 
-from setuptools import setup, find_packages
-import sys
-
-pytest_extras = [
-    "pytest",
-    "requests",
-]
-if sys.version_info[0] == 2:
-    pytest_extras.append("pathlib2")
-    pytest_extras.append("gocept.pytestlayer")
-if sys.version_info[0] == 3 and sys.version_info[1] <= 11:
-    pytest_extras.append("gocept.pytestlayer")
-if sys.version_info[0] == 3 and sys.version_info[1] >= 12:
-    pytest_extras.append("zope.pytestlayer")
+from setuptools import setup
 
 
 version = "9.0.0.dev0"
@@ -46,15 +33,14 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Framework :: Plone",
         "Framework :: Plone :: 6.2",
-        "Framework :: Plone :: 4.3",
-        "Framework :: Plone :: 5.1",
-        "Framework :: Plone :: 5.2",
+        "Framework :: Plone :: Addon",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     keywords="batch search replace",
@@ -64,23 +50,31 @@ setup(
     maintainer_email="m.van.rees@zestsoftware.nl",
     url="https://github.com/collective/collective.searchandreplace",
     license="GPL",
+    # src layout; native (PEP 420) namespace, so no collective/__init__.py.
+    # setuptools discovers the packages under src/ (plone.meta switch-to-pep420).
     include_package_data=True,
     zip_safe=False,
-    python_requires=">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*",
+    python_requires=">=3.10",
     install_requires=[
         "Acquisition",
         "plone.api",
-        "plone.app.layout",
+        "plone.app.registry",
         "plone.app.textfield",
         "plone.autoform",
+        "plone.base",
+        "plone.dexterity",
+        "plone.registry",
         "plone.resource",
+        "plone.z3cform",
         "Products.CMFCore",
-        "Products.CMFPlone",
+        "Products.CMFPlone>=6.2",
+        "Products.GenericSetup",
         "Products.statusmessages",
-        "Zope2",
+        "Zope",
         "z3c.form",
         "zope.component",
         "zope.contentprovider",
+        "zope.i18n",
         "zope.i18nmessageid",
         "zope.interface",
         "zope.publisher",
@@ -88,14 +82,16 @@ setup(
     ],
     extras_require=dict(
         test=[
-            "collective.dexteritytextindexer",
+            "plone.app.contenttypes",
             "plone.app.testing",
+            "plone.testing",
+            "pytest",
+            "zope.pytestlayer",
         ],
-        pytest=pytest_extras,
     ),
     entry_points="""
-    # -*- Entry points: -*-
-    [z3c.autoinclude.plugin]
+    [plone.autoinclude.plugin]
     target = plone
+    module = collective.searchandreplace
     """,
 )

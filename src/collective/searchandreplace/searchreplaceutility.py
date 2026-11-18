@@ -5,15 +5,12 @@ from Acquisition import aq_parent
 from collective.searchandreplace import SearchAndReplaceMessageFactory as _
 from collective.searchandreplace.interfaces import ISearchReplaceSettings
 from plone import api
-try:
-    from plone.app.layout.navigation.defaultpage import isDefaultPage
-except ImportError:
-    from plone.base.defaultpage import is_default_page as isDefaultPage
+from plone.base.defaultpage import is_default_page as isDefaultPage
 from plone.app.textfield import RichTextValue
 from plone.app.textfield.interfaces import IRichText
 from plone.registry.interfaces import IRegistry
-from Products.CMFPlone import PloneMessageFactory
-from Products.CMFPlone.utils import safe_unicode
+from plone.base import PloneMessageFactory
+from plone.base.utils import safe_text as safe_unicode
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
@@ -23,25 +20,18 @@ from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
 
+from importlib.util import find_spec
+from plone.dexterity.utils import iterSchemata
+
 import logging
-import pkg_resources
 import re
-import six
 
-try:
-    pkg_resources.get_distribution("plone.dexterity")
-except pkg_resources.DistributionNotFound:
-    HAS_DEXTERITY = False
-else:
-    HAS_DEXTERITY = True
-    from plone.dexterity.utils import iterSchemata
 
-try:
-    pkg_resources.get_distribution("Products.Archetypes")
-except pkg_resources.DistributionNotFound:
-    HAS_ARCHETYPES = False
-else:
-    HAS_ARCHETYPES = True
+HAS_DEXTERITY = True
+# Archetypes is gone from Plone 6 core, but may still be installed (e.g. during
+# a migration), so its fields are still handled when present.
+HAS_ARCHETYPES = find_spec("Products.Archetypes") is not None
+if HAS_ARCHETYPES:
     from Products.Archetypes.interfaces import ITextField
     from Products.Archetypes.interfaces import ILinesField
     from Products.Archetypes.interfaces import IStringField
@@ -114,7 +104,7 @@ class SearchReplaceUtility(object):
                 obj = b.getObject()
             except (KeyError, AttributeError):
                 ipath = b.getPath()
-                logger.warn("getObject failed for %s", ipath)
+                logger.warning("getObject failed for %s", ipath)
                 continue
             mtool = api.portal.get_tool("portal_membership")
             if not mtool.checkPermission(self.permission, obj):
@@ -157,7 +147,7 @@ class SearchReplaceUtility(object):
             try:
                 obj = b.getObject()
             except (KeyError, AttributeError):
-                logger.warn("getObject failed for %s", ipath)
+                logger.warning("getObject failed for %s", ipath)
                 continue
             mtool = api.portal.get_tool("portal_membership")
             if not mtool.checkPermission(self.permission, obj):
@@ -198,7 +188,7 @@ class SearchReplaceUtility(object):
                 obj = b.getObject()
             except (KeyError, AttributeError):
                 ipath = b.getPath()
-                logger.warn("getObject failed for %s", ipath)
+                logger.warning("getObject failed for %s", ipath)
                 continue
             mtool = api.portal.get_tool("portal_membership")
             if not mtool.checkPermission(self.permission, obj):
@@ -405,20 +395,20 @@ def getTextFields(obj):
 
 
 def setTextField(obj, fieldname, text):
-    text = six.text_type(text)
+    text = str(text)
     obj_base = aq_base(obj)
     if getattr(obj_base, "Schema", None):
         # Archetypes
         field = obj_base.getField(fieldname)
         if field is None:
-            logger.warn("Field %s not found for %s", fieldname, obj.getId())
+            logger.warning("Field %s not found for %s", fieldname, obj.getId())
             return
         field.set(obj, text)
     else:
         # Dexterity
         field = getField(obj_base, fieldname)
         if field is None:
-            logger.warn("Field %s not found for %s", fieldname, obj.getId())
+            logger.warning("Field %s not found for %s", fieldname, obj.getId())
             return
         if IRichText.providedBy(field):
             # Get mimetype from old value.
@@ -470,7 +460,7 @@ def getRawTextField(obj, field):
         if isinstance(baseunit, tuple):
             #  LinesField
             text = safe_unicode("\n".join(baseunit))
-        elif hasattr(baseunit, "raw") and isinstance(baseunit.raw, six.text_type):
+        elif hasattr(baseunit, "raw") and isinstance(baseunit.raw, str):
             text = baseunit.raw
         else:
             text = safe_unicode(field.getRaw(obj))

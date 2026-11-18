@@ -1,7 +1,9 @@
 # -*- coding: us-ascii -*-
+from Acquisition import aq_parent
 from collections import namedtuple
 from collective.searchandreplace.interfaces import ISearchReplaceSettings
 from collective.searchandreplace.interfaces import ISearchReplaceUtility
+from plone.base.defaultpage import is_default_page
 from plone.registry.interfaces import IRegistry
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from z3c.form import interfaces
@@ -12,8 +14,6 @@ from zope.contentprovider.interfaces import IContentProvider
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.browser import BrowserView
-
-import six
 
 
 Field = namedtuple('Field', ['label', 'value'])
@@ -84,7 +84,7 @@ class SearchReplaceTable(BrowserView):
         if fields is None:
             # reset to all fields when no fields are selected
             return self.fields
-        elif isinstance(fields, six.text_type) or isinstance(fields, six.binary_type):
+        elif isinstance(fields, (str, bytes)):
             # take care of a single field being selected
             result = set()
             result.add(fields)
@@ -98,9 +98,28 @@ class SearchReplaceTable(BrowserView):
         else:
             return [item for item in self.results if item['field'] in self.filter_fields]
 
+    def search_root(self):
+        """Where the search starts: a folder's default page searches its folder
+        (see make_catalog_query_args), so a page used as a site's front page
+        searches the whole site."""
+        context = self.context
+        container = aq_parent(context)
+        if (
+            "form.widgets.searchSubfolders" in self.request
+            and not context.isPrincipiaFolderish
+            and is_default_page(container, context)
+        ):
+            return container
+        return context
+
+    def shows_paths(self):
+        """Show the Path column whenever results can come from more than one item."""
+        root = self.search_root()
+        return bool(root.isPrincipiaFolderish)
+
     def getRelativePath(self, path):
-        """ Get a relative path """
-        cpath = "/".join(self.context.getPhysicalPath())
+        """ Get a path relative to where the search started """
+        cpath = "/".join(self.search_root().getPhysicalPath())
         rpath = path[len(cpath):]
         if rpath:
             rpath = "." + rpath

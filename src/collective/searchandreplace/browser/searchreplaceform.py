@@ -1,13 +1,7 @@
 # -*- coding: us-ascii -*-
-from Acquisition import aq_parent
 from collective.searchandreplace import SearchAndReplaceMessageFactory as _
 from collective.searchandreplace.interfaces import ISearchReplaceUtility
 
-
-try:
-    from plone.app.layout.navigation.defaultpage import isDefaultPage
-except ImportError:
-    from plone.base.defaultpage import is_default_page as isDefaultPage
 
 from plone.autoform.form import AutoExtensibleForm
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile

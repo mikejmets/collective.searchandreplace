@@ -28,7 +28,7 @@
 
   <browser:page
       name="searchreplace-controlpanel"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       permission="cmf.ManagePortal"
       class=".controlpanel.SearchReplaceControlPanelView"
       />

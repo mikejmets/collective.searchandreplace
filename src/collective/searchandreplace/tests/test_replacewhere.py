@@ -12,7 +12,6 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
-import six
 
 import unittest
 
@@ -548,10 +547,7 @@ class TestReplaceWhere(unittest.TestCase):
         r_parameters.update(parameters)
         results = self.srutil.replaceAllMatches(**r_parameters)
         self.assertEqual(results, 1)
-        if six.PY3:
-            self.assertEqual(doc1.Subject(), (u"Remplacé", "Replaced"))
-        if six.PY2:
-            self.assertEqual(doc1.Subject(), (u"Remplacé".encode("utf8"), "Replaced"))
+        self.assertEqual(doc1.Subject(), (u"Remplacé", "Replaced"))
 
     def testReplaceEmpty(self):
         from collective.searchandreplace.searchreplaceutility import getRawText

@@ -1,4 +1,3 @@
-from pkg_resources import get_distribution
 from plone import api
 from plone.app.testing import applyProfile
 from plone.app.testing import PloneSandboxLayer
@@ -9,8 +8,8 @@ from plone.app.testing.layers import IntegrationTesting
 from plone.testing import z2
 
 
-PLONE_VERSION = get_distribution("Products.CMFPlone").version
-MAJOR_PLONE_VERSION = int(PLONE_VERSION[0])
+# Plone 6 only now; kept for the Archetypes branches below.
+MAJOR_PLONE_VERSION = 6
 
 
 class SearchReplaceLayer(PloneSandboxLayer):
@@ -23,9 +22,6 @@ class SearchReplaceLayer(PloneSandboxLayer):
             import plone.app.contenttypes
 
             self.loadZCML(package=plone.app.contenttypes)
-            import collective.dexteritytextindexer
-
-            self.loadZCML(package=collective.dexteritytextindexer)
         else:
             # Needed for our Archetypes SampleType.
             z2.installProduct(app, "collective.searchandreplace")

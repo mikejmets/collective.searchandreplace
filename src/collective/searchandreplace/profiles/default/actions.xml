@@ -7,6 +7,7 @@
       <property name="title" i18n:translate="">Search/Replace</property>
       <property name="description" i18n:translate="">Search and Replace text</property>
       <property name="url_expr">string:$object_url/@@searchreplaceform</property>
+      <property name="icon_expr">string:search</property>
       <property name="permissions">
         <element value="collective.searchandreplace: Use Search And Replace" />
       </property>

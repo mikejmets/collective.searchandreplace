@@ -4,13 +4,29 @@ Changelog
 9.0.0 (unreleased)
 ------------------
 
-- Breaking: Replace ``pkg_resources`` namespace with PEP 420 native namespace,
-  using ``plone.meta``'s ``switch-to-pep420`` (Plone 6.2 PLIP #3928).
-  Support only Plone 6.2 and Python 3.10+.
+- Breaking: Plone 6.2 and Python 3.10-3.14 only. Dropped Python 2, ``six``
+  and Plone 4/5 support code.
 
-- Move the code to a ``src/`` layout and apply the ``plone.meta`` default
-  configuration (tox, GitHub Actions, pre-commit, ``pyproject.toml``), testing
-  Plone 6.2 only.
+- Replace ``pkg_resources`` namespace with PEP 420 native namespace, using
+  ``plone.meta``'s ``switch-to-pep420`` (Plone 6.2 PLIP #3928). Moved the code to
+  a ``src/`` layout and applied the ``plone.meta`` default configuration
+  (tox, GitHub Actions, pre-commit, ``pyproject.toml``).
+
+- Register with ``plone.autoinclude`` instead of ``z3c.autoinclude``.
+
+- Imports from ``plone.base`` (``is_default_page``, ``safe_text``,
+  ``PloneMessageFactory``).
+
+- Replace the preview table's jQuery helpers with plain JavaScript.
+
+- Show the Path column when searching from a folder's default page (e.g. a
+  site's front page), which searches the whole folder; paths are relative to
+  that folder.
+
+- Plone 6 icons for the toolbar action and the control panel (upgrade step 2003).
+
+- Tests use Plone's own ``plone.textindexer`` behavior instead of
+  ``collective.dexteritytextindexer``.
 
 
 8.3.1 (2025-01-10)

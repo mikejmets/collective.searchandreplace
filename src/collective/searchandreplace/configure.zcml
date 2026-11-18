@@ -98,6 +98,17 @@
         import_steps="plone.app.registry"
     />
   </genericsetup:upgradeSteps>
+  <genericsetup:upgradeSteps
+    source="2002"
+    destination="2003"
+    profile="collective.searchandreplace:default">
+    <genericsetup:upgradeDepends
+        title="Plone 6 icons"
+        description="Icons for the toolbar action and the control panel"
+        import_profile="collective.searchandreplace:default"
+        import_steps="actions controlpanel"
+    />
+  </genericsetup:upgradeSteps>
   <utility
      provides=".interfaces.ISearchReplaceUtility"
      factory=".searchreplaceutility.SearchReplaceUtility"
