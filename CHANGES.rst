@@ -28,6 +28,8 @@ Changelog
 - Tests use Plone's own ``plone.textindexer`` behavior instead of
   ``collective.dexteritytextindexer``.
 
+- Tests for the Path column, upgrade step 2003 and the control panel.
+
 
 8.3.1 (2025-01-10)
 ------------------
