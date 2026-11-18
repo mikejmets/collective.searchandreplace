@@ -1,11 +1,13 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <rolemap>
   <permissions>
-    <permission name="collective.searchandreplace: Use Search And Replace" acquire="True">
-      <role name="Editor"/>
-      <role name="Manager"/>
-      <role name="Owner"/>
-      <role name="Site Administrator"/>
+    <permission acquire="True"
+                name="collective.searchandreplace: Use Search And Replace"
+    >
+      <role name="Editor" />
+      <role name="Manager" />
+      <role name="Owner" />
+      <role name="Site Administrator" />
     </permission>
   </permissions>
 </rolemap>

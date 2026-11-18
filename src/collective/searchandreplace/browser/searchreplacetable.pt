@@ -1,197 +1,195 @@
-<tal:global define="show_replace view/view/show_replace">
-<div
-  class="field"
-  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-  i18n:domain="SearchAndReplace"
-  tal:condition="show_replace"
-  tal:define="fields view/getAffectedFields;
-              filter_fields view/filter_fields;"
+<tal:global define="
+              show_replace view/view/show_replace;
+            ">
+  <div xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+       class="field"
+       tal:define="
+         fields view/getAffectedFields;
+         filter_fields view/filter_fields;
+       "
+       tal:condition="show_replace"
+       i18n:domain="SearchAndReplace"
   >
-  <label onclick="toggleHidden('#fieldFilter');"
+    <label onclick="toggleHidden('#fieldFilter');">
+      <span i18n:translate="">Filter by fields</span>
+      (<span tal:replace="python:len(fields)"></span>)
+    </label>
+
+    <div class="hiddenStructure"
+         id="fieldFilter"
+         tal:attributes="
+           class view/getFieldFilterClass;
+         "
     >
-    <span i18n:translate="">Filter by fields</span> (<span
-      tal:replace="python:len(fields)"
-    ></span
-    >)
-  </label>
+      <div>
+        <input class="noborder"
+               alt="Select all items"
+               checked="checked"
+               name="selectButton"
+               onclick="toggleSelect(this,'form.widgets.filterFields', true);"
+               src="select_all_icon.gif"
+               title="Select all items"
+               type="checkbox"
+               i18n:attributes="title;alt"
+        />
+        <span i18n:translate="">Select all items</span>
+      </div>
 
-  <div id="fieldFilter" class="hiddenStructure"
-       tal:attributes="class view/getFieldFilterClass">
-  <div>
-    <input
-      class="noborder"
-      src="select_all_icon.gif"
-      name="selectButton"
-      title="Select all items"
-      onclick="toggleSelect(this,'form.widgets.filterFields', true);"
-      alt="Select all items"
-      i18n:attributes="title;alt"
-      type="checkbox"
-      checked="checked"
-    />
-    <span i18n:translate="">Select all items</span>
+      <div>
+        <tal:fields repeat="field fields">
+          <span>
+            <input id="form.widgets.filterFields"
+                   checked="checked"
+                   name="form.widgets.filterFields"
+                   type="checkbox"
+                   tal:attributes="
+                     value field/value;
+                     checked python:field.value in filter_fields;
+                   "
+            />
+            <span tal:replace="field/label"></span>
+          </span>
+        </tal:fields>
+      </div>
+
+      <button class="btn btn-secondary submit-widget button-field"
+              id="form.buttons.filter_fields.Preview"
+              name="form.buttons.preview"
+              type="submit"
+              value="Preview"
+              i18n:attributes="value"
+              i18n:translate=""
+      >Preview</button>
+    </div>
   </div>
 
-  <div>
-  <tal:fields repeat="field fields">
-  <span>
-    <input
-      type="checkbox"
-      id="form.widgets.filterFields"
-      checked="checked"
-      name="form.widgets.filterFields"
-      tal:attributes="value field/value;
-                      checked python:field.value in filter_fields"
-    />
-    <span tal:replace="field/label" />
-  </span>
-  </tal:fields>
-  </div>
+  <input name="form.widgets.preview"
+         type="hidden"
+         value="preview"
+  />
 
-  <button
-     type="submit"
-     id="form.buttons.filter_fields.Preview"
-     name="form.buttons.preview"
-     class="btn btn-secondary submit-widget button-field"
-     i18n:attributes="value"
-     i18n:translate=""
-     value="Preview"
-     >Preview</button>
-  </div>
-</div>
-
-<input name="form.widgets.preview" type="hidden" value="preview" />
-
-<div
-  class="field"
-  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-  i18n:domain="SearchAndReplace"
-  tal:condition="show_replace"
-  tal:define="isFolderish view/shows_paths;
-                 items view/getItems;
-                 findText request/form.widgets.findWhat|nothing;
-                 replaceWith request/form.widgets.replaceWith|nothing;
-                 maximum_text_characters view/maximum_text_characters;
-                 "
->
-  <label for="form.affectedContent">
-    <span i18n:translate="">Affected Content</span> (<span
-      tal:replace="python:len(items)"
-    ></span
-    >)
-  </label>
-
-  <table
-    id="sortable"
-    class="listing"
-    summary="Affected content"
-    i18n:attributes="summary summary_affected_content;"
+  <div xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+       class="field"
+       tal:define="
+         isFolderish view/shows_paths;
+         items view/getItems;
+         findText request/form.widgets.findWhat|nothing;
+         replaceWith request/form.widgets.replaceWith|nothing;
+         maximum_text_characters view/maximum_text_characters;
+       "
+       tal:condition="show_replace"
+       i18n:domain="SearchAndReplace"
   >
-    <thead>
-      <tr>
-        <th class="nosort">
-          <input
-            class="noborder"
-            src="select_all_icon.gif"
-            name="selectButton"
-            title="Select all items"
-            onclick="toggleSelect(this,'form.affectedContent', true);"
-            alt="Select all items"
-            i18n:attributes="title;alt"
-            type="checkbox"
-            checked="checked"
-          />
-        </th>
-        <th class="nosort" tal:condition="isFolderish" i18n:translate="">
-          Path
-        </th>
-        <th class="nosort" i18n:translate="">Line</th>
-        <th class="nosort" i18n:translate="">Before</th>
-        <th class="nosort" i18n:translate="">After</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tal:block tal:repeat="item items">
-        <tr
-          tal:define="oddrow repeat/item/odd;
-                        itempath item/path;
-                        itemrelpath python:view.getRelativePath(itempath);
-                        itemurl item/url;
-                        itemline item/line;
-                        itempos item/pos;
-                        itemBeforeText python:item['text'][0];
-                        itemFindText python:item['text'][1];
-                        itemAfterText python:item['text'][2];"
-          tal:attributes="class python:oddrow and 'odd' or 'even';"
-        >
-          <td>
-            <input
-              type="checkbox"
-              id="form.affectedContent"
-              checked="checked"
-              name="form.affectedContent"
-              tal:attributes="value string:$itemline:$itempos:$itempath;"
-            />
-          </td>
-          <td tal:condition="isFolderish">
-            <a
-              href=""
-              alt=""
-              tal:attributes="href itemurl;
-                               alt itemrelpath;"
-              tal:content="itemrelpath"
-            />
-            <a
-              href=""
-              alt=""
-              target="_blank"
-              tal:attributes="href string:${itemurl}/edit"
-            >
-              <img
-                src="++theme++collective.searchandreplace/edit_inline.png"
-                alt="edit"
-                title="edit"
-                i18n:domain="plone"
-                i18n:attributes="alt title"
-              />
-            </a>
-          </td>
-          <td tal:content="item/linecol">1</td>
-          <td>
-            <span
-              tal:condition="python: len(itemBeforeText) > maximum_text_characters"
-              >[...]</span
-            ><span
-              tal:replace="python: itemBeforeText[-maximum_text_characters:]"
-            /><i><span style="color: red" tal:content="itemFindText" /></i
-            ><span
-              tal:replace="python: itemAfterText[:maximum_text_characters]"
-            /><span
-              tal:condition="python: len(itemAfterText) > maximum_text_characters"
-              >[...]</span
-            >
-          </td>
-          <td>
-            <span
-              tal:condition="python: len(itemBeforeText) > maximum_text_characters"
-              >[...]</span
-            ><span
-              tal:replace="python: itemBeforeText[-maximum_text_characters:]"
-            /><i><span style="color: green" tal:content="replaceWith" /></i
-            ><span
-              tal:replace="python: itemAfterText[:maximum_text_characters]"
-            /><span
-              tal:condition="python: len(itemAfterText) > maximum_text_characters"
-              >[...]</span
-            >
-          </td>
-        </tr>
-      </tal:block>
-    </tbody>
-  </table>
-</div>
+    <label for="form.affectedContent">
+      <span i18n:translate="">Affected Content</span>
+      (<span tal:replace="python:len(items)"></span>)
+    </label>
 
-<script>
+    <table class="listing"
+           id="sortable"
+           summary="Affected content"
+           i18n:attributes="summary summary_affected_content;"
+    >
+      <thead>
+        <tr>
+          <th class="nosort">
+            <input class="noborder"
+                   alt="Select all items"
+                   checked="checked"
+                   name="selectButton"
+                   onclick="toggleSelect(this,'form.affectedContent', true);"
+                   src="select_all_icon.gif"
+                   title="Select all items"
+                   type="checkbox"
+                   i18n:attributes="title;alt"
+            />
+          </th>
+          <th class="nosort"
+              tal:condition="isFolderish"
+              i18n:translate=""
+          >
+          Path
+          </th>
+          <th class="nosort"
+              i18n:translate=""
+          >Line</th>
+          <th class="nosort"
+              i18n:translate=""
+          >Before</th>
+          <th class="nosort"
+              i18n:translate=""
+          >After</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tal:block tal:repeat="item items">
+          <tr tal:define="
+                oddrow repeat/item/odd;
+                itempath item/path;
+                itemrelpath python:view.getRelativePath(itempath);
+                itemurl item/url;
+                itemline item/line;
+                itempos item/pos;
+                itemBeforeText python:item['text'][0];
+                itemFindText python:item['text'][1];
+                itemAfterText python:item['text'][2];
+              "
+              tal:attributes="
+                class python:oddrow and 'odd' or 'even';
+              "
+          >
+            <td>
+              <input id="form.affectedContent"
+                     checked="checked"
+                     name="form.affectedContent"
+                     type="checkbox"
+                     tal:attributes="
+                       value string:$itemline:$itempos:$itempath;
+                     "
+              />
+            </td>
+            <td tal:condition="isFolderish">
+              <a alt=""
+                 href=""
+                 tal:content="itemrelpath"
+                 tal:attributes="
+                   href itemurl;
+                   alt itemrelpath;
+                 "
+              ></a>
+              <a alt=""
+                 href=""
+                 target="_blank"
+                 tal:attributes="
+                   href string:${itemurl}/edit;
+                 "
+              >
+                <img alt="edit"
+                     src="++theme++collective.searchandreplace/edit_inline.png"
+                     title="edit"
+                     i18n:attributes="alt title"
+                     i18n:domain="plone"
+                />
+              </a>
+            </td>
+            <td tal:content="item/linecol">1</td>
+            <td>
+              <span tal:condition="python: len(itemBeforeText) > maximum_text_characters">[...]</span><span tal:replace="python: itemBeforeText[-maximum_text_characters:]"></span><i><span style="color: red"
+                      tal:content="itemFindText"
+                ></span></i><span tal:replace="python: itemAfterText[:maximum_text_characters]"></span><span tal:condition="python: len(itemAfterText) > maximum_text_characters">[...]</span>
+            </td>
+            <td>
+              <span tal:condition="python: len(itemBeforeText) > maximum_text_characters">[...]</span><span tal:replace="python: itemBeforeText[-maximum_text_characters:]"></span><i><span style="color: green"
+                      tal:content="replaceWith"
+                ></span></i><span tal:replace="python: itemAfterText[:maximum_text_characters]"></span><span tal:condition="python: len(itemAfterText) > maximum_text_characters">[...]</span>
+            </td>
+          </tr>
+        </tal:block>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
   // Plain JavaScript: Plone 6 loads jQuery late, as part of its bundle.
   function toggleHidden(selector) {
     document.querySelector(selector).classList.toggle("hiddenStructure");
@@ -202,5 +200,5 @@
       function (box) { box.checked = selectbutton.checked; }
     );
   }
-</script>
+  </script>
 </tal:global>

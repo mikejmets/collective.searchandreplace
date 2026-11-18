@@ -1,19 +1,19 @@
-<?xml version="1.0"?>
-<object
-    name="portal_controlpanel"
-    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-    i18n:domain="SearchAndReplace">
+<?xml version="1.0" encoding="utf-8"?>
+<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        name="portal_controlpanel"
+        i18n:domain="SearchAndReplace"
+>
 
-  <configlet
-      title="Search and Replace settings"
-      action_id="collective.searchandreplace.searchreplacesettings"
-      appId="collective.searchandreplace"
-      category="Products"
-      condition_expr=""
-      url_expr="string:${portal_url}/@@searchreplace-controlpanel"
-      icon_expr="string:search"
-      visible="True"
-      i18n:attributes="title">
+  <configlet action_id="collective.searchandreplace.searchreplacesettings"
+             appId="collective.searchandreplace"
+             category="Products"
+             condition_expr=""
+             icon_expr="string:search"
+             title="Search and Replace settings"
+             url_expr="string:${portal_url}/@@searchreplace-controlpanel"
+             visible="True"
+             i18n:attributes="title"
+  >
     <permission>Manage portal</permission>
   </configlet>
 

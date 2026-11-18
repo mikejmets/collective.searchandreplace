@@ -1,29 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
 <model xmlns="http://namespaces.plone.org/supermodel/schema"
-       xmlns:marshal="http://namespaces.plone.org/supermodel/marshal"
        xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-       xmlns:indexer="http://namespaces.plone.org/supermodel/indexer">
-       i18n:domain="plone">
+       xmlns:indexer="http://namespaces.plone.org/supermodel/indexer"
+       xmlns:marshal="http://namespaces.plone.org/supermodel/marshal"
+>
+       i18n:domain="plone"&gt;
   <schema>
-    <field name="rich" type="plone.app.textfield.RichText"
-           indexer:searchable="true">
+    <field indexer:searchable="true"
+           name="rich"
+           type="plone.app.textfield.RichText"
+    >
       <description />
       <required>False</required>
       <title>Rich Text</title>
     </field>
-    <field name="plain" type="zope.schema.Text"
-           indexer:searchable="true">
+    <field indexer:searchable="true"
+           name="plain"
+           type="zope.schema.Text"
+    >
       <description />
       <required>False</required>
       <title>Plain Text</title>
     </field>
-    <field name="line" type="zope.schema.TextLine"
-           indexer:searchable="true">
+    <field indexer:searchable="true"
+           name="line"
+           type="zope.schema.TextLine"
+    >
       <description>Textlines are ignored by searchreplace. You need text or richtext.</description>
       <required>False</required>
       <title>Text Line</title>
     </field>
-    <field name="unsearchable" type="plone.app.textfield.RichText"
-           indexer:searchable="">
+    <field indexer:searchable=""
+           name="unsearchable"
+           type="plone.app.textfield.RichText"
+    >
       <description />
       <required>False</required>
       <title>Unsearchable Text</title>

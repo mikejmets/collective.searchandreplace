@@ -1,11 +1,22 @@
-<?xml version="1.0"?>
-<object name="portal_actions" meta_type="Plone Actions Tool"
-        xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+<?xml version="1.0" encoding="utf-8"?>
+<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        meta_type="Plone Actions Tool"
+        name="portal_actions"
+>
 
-  <object name="object" meta_type="CMF Action Category">
-    <object name="search_and_replace" meta_type="CMF Action" i18n:domain="SearchAndReplace">
-      <property name="title" i18n:translate="">Search/Replace</property>
-      <property name="description" i18n:translate="">Search and Replace text</property>
+  <object meta_type="CMF Action Category"
+          name="object"
+  >
+    <object meta_type="CMF Action"
+            name="search_and_replace"
+            i18n:domain="SearchAndReplace"
+    >
+      <property name="title"
+                i18n:translate=""
+      >Search/Replace</property>
+      <property name="description"
+                i18n:translate=""
+      >Search and Replace text</property>
       <property name="url_expr">string:$object_url/@@searchreplaceform</property>
       <property name="icon_expr">string:search</property>
       <property name="permissions">
